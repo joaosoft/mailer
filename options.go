@@ -2,6 +2,7 @@ package mailer
 
 import (
 	logger "github.com/joaosoft/logger"
+	"github.com/joaosoft/manager"
 )
 
 // MailerOption ...
@@ -34,5 +35,12 @@ func WithLogger(logger logger.ILogger) MailerOption {
 func WithLogLevel(level logger.Level) MailerOption {
 	return func(mailer *Mailer) {
 		log.SetLevel(level)
+	}
+}
+
+// WithManager ...
+func WithManager(mgr *manager.Manager) MailerOption {
+	return func(mailer *Mailer) {
+		mailer.pm = mgr
 	}
 }

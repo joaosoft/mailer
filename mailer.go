@@ -13,16 +13,17 @@ type Mailer struct {
 	auth          Auth
 	isLogExternal bool
 	mux           sync.Mutex
+	pm            *manager.Manager
 }
 
 // NewMailer ...
 func NewMailer(options ...MailerOption) *Mailer {
-	pm := manager.NewManager(manager.WithRunInBackground(false))
-
-	mailer := &Mailer{}
+	mailer := &Mailer{
+		pm: manager.NewManager(manager.WithRunInBackground(false)),
+	}
 
 	if mailer.isLogExternal {
-		pm.Reconfigure(manager.WithLogger(log))
+		mailer.pm.Reconfigure(manager.WithLogger(log))
 	}
 
 	// load configuration File
@@ -30,7 +31,7 @@ func NewMailer(options ...MailerOption) *Mailer {
 	if simpleConfig, err := manager.NewSimpleConfig(fmt.Sprintf("/config/app.%s.json", GetEnv()), appConfig); err != nil {
 		log.Error(err.Error())
 	} else {
-		pm.AddConfig("config_app", simpleConfig)
+		mailer.pm.AddConfig("config_app", simpleConfig)
 		level, _ := logger.ParseLevel(appConfig.Mailer.Log.Level)
 		log.Debugf("setting log level to %s", level)
 		log.Reconfigure(logger.WithLevel(level))
