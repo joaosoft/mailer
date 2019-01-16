@@ -8,7 +8,7 @@ import (
 
 // AppConfig ...
 type AppConfig struct {
-	Mailer MailerConfig `json:"mailer"`
+	Mailer *MailerConfig `json:"mailer"`
 }
 
 // MailerConfig ...
@@ -36,5 +36,5 @@ func NewConfig(host, port, identity, username, password string) *MailerConfig {
 	appConfig.Mailer.Username = username
 	appConfig.Mailer.Password = password
 
-	return &appConfig.Mailer
+	return appConfig.Mailer
 }

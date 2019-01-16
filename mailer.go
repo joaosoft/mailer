@@ -30,14 +30,14 @@ func NewMailer(options ...MailerOption) *Mailer {
 	appConfig := &AppConfig{}
 	if simpleConfig, err := manager.NewSimpleConfig(fmt.Sprintf("/config/app.%s.json", GetEnv()), appConfig); err != nil {
 		log.Error(err.Error())
-	} else {
+	} else if appConfig.Mailer != nil {
 		mailer.pm.AddConfig("config_app", simpleConfig)
 		level, _ := logger.ParseLevel(appConfig.Mailer.Log.Level)
 		log.Debugf("setting log level to %s", level)
 		log.Reconfigure(logger.WithLevel(level))
 	}
 
-	mailer.config = &appConfig.Mailer
+	mailer.config = appConfig.Mailer
 	mailer.auth = PlainAuth(mailer.config.Identity, mailer.config.Username, mailer.config.Password, mailer.config.Host)
 
 	mailer.Reconfigure(options...)
