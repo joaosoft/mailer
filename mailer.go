@@ -19,7 +19,8 @@ type Mailer struct {
 // NewMailer ...
 func NewMailer(options ...MailerOption) *Mailer {
 	mailer := &Mailer{
-		pm: manager.NewManager(manager.WithRunInBackground(false)),
+		pm:     manager.NewManager(manager.WithRunInBackground(false)),
+		config: &MailerConfig{},
 	}
 
 	if mailer.isLogExternal {
@@ -35,9 +36,9 @@ func NewMailer(options ...MailerOption) *Mailer {
 		level, _ := logger.ParseLevel(appConfig.Mailer.Log.Level)
 		log.Debugf("setting log level to %s", level)
 		log.Reconfigure(logger.WithLevel(level))
+		mailer.config = appConfig.Mailer
 	}
 
-	mailer.config = appConfig.Mailer
 	mailer.auth = PlainAuth(mailer.config.Identity, mailer.config.Username, mailer.config.Password, mailer.config.Host)
 
 	mailer.Reconfigure(options...)
