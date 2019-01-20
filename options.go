@@ -3,7 +3,6 @@ package mailer
 import (
 	logger "github.com/joaosoft/logger"
 	"github.com/joaosoft/manager"
-	"github.com/labstack/gommon/log"
 )
 
 // MailerOption ...
