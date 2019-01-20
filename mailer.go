@@ -27,7 +27,9 @@ func NewMailer(options ...MailerOption) *Mailer {
 		mailer.pm.Reconfigure(manager.WithLogger(log))
 	}
 
-	if err == nil {
+	if err != nil {
+		log.Error(err.Error())
+	} else {
 		mailer.pm.AddConfig("config_app", simpleConfig)
 		level, _ := logger.ParseLevel(config.Mailer.Log.Level)
 		log.Debugf("setting log level to %s", level)
