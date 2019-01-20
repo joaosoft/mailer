@@ -10,6 +10,7 @@ import (
 type Mailer struct {
 	config        *MailerConfig
 	auth          Auth
+	logger        logger.ILogger
 	isLogExternal bool
 	mux           sync.Mutex
 	pm            *manager.Manager
@@ -18,29 +19,32 @@ type Mailer struct {
 // NewMailer ...
 func NewMailer(options ...MailerOption) *Mailer {
 	config, simpleConfig, err := NewConfig()
-	mailer := &Mailer{
+	log := logger.NewLogDefault("mailer", logger.DebugLevel)
+
+	service := &Mailer{
 		pm:     manager.NewManager(manager.WithRunInBackground(false)),
 		config: &config.Mailer,
+		logger: log,
 	}
 
-	if mailer.isLogExternal {
-		mailer.pm.Reconfigure(manager.WithLogger(log))
+	if service.isLogExternal {
+		service.pm.Reconfigure(manager.WithLogger(log))
 	}
 
 	if err != nil {
-		log.Error(err.Error())
+		service.logger.Error(err.Error())
 	} else {
-		mailer.pm.AddConfig("config_app", simpleConfig)
+		service.pm.AddConfig("config_app", simpleConfig)
 		level, _ := logger.ParseLevel(config.Mailer.Log.Level)
-		log.Debugf("setting log level to %s", level)
-		log.Reconfigure(logger.WithLevel(level))
+		service.logger.Debugf("setting log level to %s", level)
+		service.logger.Reconfigure(logger.WithLevel(level))
 	}
 
-	mailer.auth = PlainAuth(mailer.config.Identity, mailer.config.Username, mailer.config.Password, mailer.config.Host)
+	service.auth = PlainAuth(service.config.Identity, service.config.Username, service.config.Password, service.config.Host)
 
-	mailer.Reconfigure(options...)
+	service.Reconfigure(options...)
 
-	return mailer
+	return service
 }
 
 func (e *Mailer) SendMessage() *SendMessageService {

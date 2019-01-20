@@ -3,6 +3,7 @@ package mailer
 import (
 	logger "github.com/joaosoft/logger"
 	"github.com/joaosoft/manager"
+	"github.com/labstack/gommon/log"
 )
 
 // MailerOption ...
@@ -26,7 +27,7 @@ func WithConfiguration(config *MailerConfig) MailerOption {
 // WithLogger ...
 func WithLogger(logger logger.ILogger) MailerOption {
 	return func(mailer *Mailer) {
-		log = logger
+		mailer.logger = logger
 		mailer.isLogExternal = true
 	}
 }
@@ -34,7 +35,7 @@ func WithLogger(logger logger.ILogger) MailerOption {
 // WithLogLevel ...
 func WithLogLevel(level logger.Level) MailerOption {
 	return func(mailer *Mailer) {
-		log.SetLevel(level)
+		mailer.logger.SetLevel(level)
 	}
 }
 
