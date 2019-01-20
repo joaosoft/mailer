@@ -1,11 +1,10 @@
 package mailer
 
 import (
-	"fmt"
 	"sync"
 
-	logger "github.com/joaosoft/logger"
-	manager "github.com/joaosoft/manager"
+	"github.com/joaosoft/logger"
+	"github.com/joaosoft/manager"
 )
 
 type Mailer struct {
@@ -18,25 +17,21 @@ type Mailer struct {
 
 // NewMailer ...
 func NewMailer(options ...MailerOption) *Mailer {
+	config, simpleConfig, err := NewConfig()
 	mailer := &Mailer{
 		pm:     manager.NewManager(manager.WithRunInBackground(false)),
-		config: &MailerConfig{},
+		config: &config.Mailer,
 	}
 
 	if mailer.isLogExternal {
 		mailer.pm.Reconfigure(manager.WithLogger(log))
 	}
 
-	// load configuration File
-	appConfig := &AppConfig{}
-	if simpleConfig, err := manager.NewSimpleConfig(fmt.Sprintf("/config/app.%s.json", GetEnv()), appConfig); err != nil {
-		log.Error(err.Error())
-	} else if appConfig.Mailer != nil {
+	if err == nil {
 		mailer.pm.AddConfig("config_app", simpleConfig)
-		level, _ := logger.ParseLevel(appConfig.Mailer.Log.Level)
+		level, _ := logger.ParseLevel(config.Mailer.Log.Level)
 		log.Debugf("setting log level to %s", level)
 		log.Reconfigure(logger.WithLevel(level))
-		mailer.config = appConfig.Mailer
 	}
 
 	mailer.auth = PlainAuth(mailer.config.Identity, mailer.config.Username, mailer.config.Password, mailer.config.Host)

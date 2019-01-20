@@ -2,13 +2,12 @@ package mailer
 
 import (
 	"fmt"
-
-	gomanager "github.com/joaosoft/manager"
+	"github.com/joaosoft/manager"
 )
 
 // AppConfig ...
 type AppConfig struct {
-	Mailer *MailerConfig `json:"mailer"`
+	Mailer MailerConfig `json:"mailer"`
 }
 
 // MailerConfig ...
@@ -24,13 +23,13 @@ type MailerConfig struct {
 }
 
 // NewConfig ...
-func NewConfig() (*MailerConfig, error) {
+func NewConfig() (*AppConfig, manager.IConfig, error) {
 	appConfig := &AppConfig{}
-	if _, err := gomanager.NewSimpleConfig(fmt.Sprintf("/config/app.%s.json", GetEnv()), appConfig); err != nil {
-		log.Error(err.Error())
+	simpleConfig, err := manager.NewSimpleConfig(fmt.Sprintf("/config/app.%s.json", GetEnv()), appConfig)
 
-		return &MailerConfig{}, err
+	if err != nil {
+		log.Error(err.Error())
 	}
 
-	return appConfig.Mailer, nil
+	return appConfig, simpleConfig, err
 }
