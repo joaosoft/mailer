@@ -19,16 +19,15 @@ type Mailer struct {
 // NewMailer ...
 func NewMailer(options ...MailerOption) *Mailer {
 	config, simpleConfig, err := NewConfig()
-	log := logger.NewLogDefault("mailer", logger.DebugLevel)
 
 	service := &Mailer{
 		pm:     manager.NewManager(manager.WithRunInBackground(false)),
 		config: &config.Mailer,
-		logger: log,
+		logger: logger.NewLogDefault("mailer", logger.DebugLevel),
 	}
 
 	if service.isLogExternal {
-		service.pm.Reconfigure(manager.WithLogger(log))
+		service.pm.Reconfigure(manager.WithLogger(service.logger))
 	}
 
 	if err != nil {
