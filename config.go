@@ -24,17 +24,13 @@ type MailerConfig struct {
 }
 
 // NewConfig ...
-func NewConfig(host, port, identity, username, password string) *MailerConfig {
+func NewConfig() (*MailerConfig, error) {
 	appConfig := &AppConfig{}
 	if _, err := gomanager.NewSimpleConfig(fmt.Sprintf("/config/app.%s.json", GetEnv()), appConfig); err != nil {
 		log.Error(err.Error())
+
+		return &MailerConfig{}, err
 	}
 
-	appConfig.Mailer.Host = host
-	appConfig.Mailer.Port = port
-	appConfig.Mailer.Identity = identity
-	appConfig.Mailer.Username = username
-	appConfig.Mailer.Password = password
-
-	return appConfig.Mailer
+	return appConfig.Mailer, nil
 }
