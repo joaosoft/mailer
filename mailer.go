@@ -23,7 +23,7 @@ func NewMailer(options ...MailerOption) *Mailer {
 	service := &Mailer{
 		pm:     manager.NewManager(manager.WithRunInBackground(false)),
 		config: &config.Mailer,
-		logger: logger.NewLogDefault("mailer", logger.DebugLevel),
+		logger: logger.NewLogDefault("mailer", logger.WarnLevel),
 	}
 
 	if service.isLogExternal {
