@@ -103,7 +103,7 @@ func (e *SendMessageService) Template(path, name string, reload bool) *SendMessa
 		defer e.mailer.mux.Unlock()
 		templates[key], err = ReadFile(key, nil)
 		if err != nil {
-			log.Error(err)
+			e.mailer.logger.Error(err)
 			return e
 		}
 	}
@@ -112,12 +112,12 @@ func (e *SendMessageService) Template(path, name string, reload bool) *SendMessa
 	t, err = t.Parse(string(templates[key]))
 	if err == nil {
 		if err := t.ExecuteTemplate(&result, name, e.message); err != nil {
-			log.Error(err)
+			e.mailer.logger.Error(err)
 			return e
 		}
 
 	} else {
-		log.Error(err)
+		e.mailer.logger.Error(err)
 		return e
 	}
 
