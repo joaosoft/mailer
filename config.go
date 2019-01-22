@@ -7,7 +7,7 @@ import (
 
 // AppConfig ...
 type AppConfig struct {
-	Mailer MailerConfig `json:"mailer"`
+	Mailer *MailerConfig `json:"mailer"`
 }
 
 // MailerConfig ...

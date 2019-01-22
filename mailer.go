@@ -22,7 +22,7 @@ func NewMailer(options ...MailerOption) *Mailer {
 
 	service := &Mailer{
 		pm:     manager.NewManager(manager.WithRunInBackground(false)),
-		config: &config.Mailer,
+		config: config.Mailer,
 		logger: logger.NewLogDefault("mailer", logger.WarnLevel),
 	}
 
@@ -32,7 +32,7 @@ func NewMailer(options ...MailerOption) *Mailer {
 
 	if err != nil {
 		service.logger.Error(err.Error())
-	} else {
+	} else if config.Mailer != nil {
 		service.pm.AddConfig("config_app", simpleConfig)
 		level, _ := logger.ParseLevel(config.Mailer.Log.Level)
 		service.logger.Debugf("setting log level to %s", level)
