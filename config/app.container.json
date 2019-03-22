@@ -4,7 +4,7 @@
     "port": "587",
     "identity": "João Ribeiro",
     "username": "joaosoft@gmail.com",
-    "password": "florianoramos",
+    "password": "123456789",
     "log": {
       "level": "info"
     }
