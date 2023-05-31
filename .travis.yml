@@ -7,6 +7,7 @@ jobs:
   include:
     - stage: test
       install:
+        - go mod tody
         - go mod vendor
       os: linux
       go: master
