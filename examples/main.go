@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"mailer"
+	"github.com/joaosoft/mailer"
 	"os"
 	"time"
 )
